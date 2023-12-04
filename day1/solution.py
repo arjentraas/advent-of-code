@@ -10,6 +10,16 @@ DIGITS_SPELLED_AS_LETTERS = {
     "four": 4,
 }
 
+combos = {
+    "nineight": 98,
+    "oneight": 18,
+    "fiveight": 58,
+    "twone": 21,
+    "threeight": 38,
+    "eightwo": 82,
+    "eighthree": 83,
+}
+
 
 def read_input() -> list:
     with open("day1/input", "rb") as handle:
@@ -24,11 +34,10 @@ class Line:
 
     def replace_misspelled_digits(self):
         for start_index in range(len(self.text)):
-            for window_size in [3, 4, 5]:
-                chars = self.text[start_index : start_index + window_size]
-                for letters, digit in DIGITS_SPELLED_AS_LETTERS.items():
-                    if letters in chars:
-                        self.text = self.text.replace(letters, str(digit))
+            for combo, digits in combos.items():
+                self.text = self.text.replace(combo, str(digits))
+            for letters, digit in DIGITS_SPELLED_AS_LETTERS.items():
+                self.text = self.text.replace(letters, str(digit))
 
     def get_line_digits(self):
         self.line_digits = []
