@@ -34,6 +34,10 @@ class Game:
         self.text = text
         self.game_id = int(text.split(":")[0].split(" ")[-1])
         self.grabs = find_color_amounts(self.text)
+        self.max_red = max([grab.red for grab in self.grabs])
+        self.max_blue = max([grab.blue for grab in self.grabs])
+        self.max_green = max([grab.green for grab in self.grabs])
+        self.power = self.max_red * self.max_blue * self.max_green
 
     def check_input_numbers(self, red: int, blue: int, green: int):
         for grab in self.grabs:
@@ -53,10 +57,8 @@ for line in input_data:
     game = Game(line)
     game.check_input_numbers(red=12, green=13, blue=14)
     games.append(game)
-    # print(
-    #     f"Game id: {game.game_id}, grabs: {[vars(grab) for grab in game.grabs if not game.possible]}"
-    # )
-    # # print(game.possible)
 
 # first try: 174 - too low
-print(sum_possible_game_ids(games))
+print(sum_possible_game_ids(games))  # part1
+
+print(sum([game.power for game in games]))  # part2
