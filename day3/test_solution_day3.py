@@ -3,6 +3,8 @@ import pytest
 from day3.solution_day3 import (
     find_adjacent_other_line,
     find_adjacent_same_line,
+    find_adjacent_two_asterisks,
+    find_asterisk_indeces,
     find_numbers,
     find_symbols_indeces,
     sum_adjacent_numbers,
@@ -103,3 +105,11 @@ def test_find_lower_adjacent():
 
 def test_sum_adjacent_numbers():
     assert sum_adjacent_numbers(test_case) == 4361
+
+
+def test_find_asterisk_indeces():
+    assert 3 in find_asterisk_indeces("...*.....")
+
+
+def test_adjacent_two_asterisks():
+    assert find_adjacent_two_asterisks(test_case) == 467835

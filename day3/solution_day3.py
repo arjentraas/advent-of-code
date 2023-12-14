@@ -24,6 +24,10 @@ def find_symbols_indeces(line: str) -> list[int]:
     return [symbol.start() for symbol in symbols]
 
 
+def find_asterisk_indeces(line: str):
+    return [ind for ind, char in enumerate(line) if char == "*"]
+
+
 def find_numbers(line: str):
     numbers = re.finditer(r"\d+", line)
     return [
@@ -86,6 +90,43 @@ def sum_adjacent_numbers(lines: list):
     return sum([n.num for n in adjacent_numbers])
 
 
+class GearRatio:
+    def __init__(self, num1, num2, ast_line_number) -> None:
+        self.num1 = num1
+        self.num2 = num2
+        self.ast_line_number = ast_line_number
+        self.gear_ratio = self.num1 * self.num2
+
+
 if __name__ == "__main__":
-    print(sum_adjacent_numbers(input_data))
-    # attempt 3: 506339
+    # part 1: print(sum_adjacent_numbers(input_data))
+    # part 2:
+    #   attempt1: 4292993 - too low
+    gear_ratios = []
+    for ind, line in enumerate(input_data):
+        ast = find_asterisk_indeces(line)
+        num_curr_line = find_numbers(line)
+        if ind > 0:
+            num_prev_line = find_numbers(input_data[ind - 1])
+        if ind < len(input_data) - 1:
+            num_next_line = find_numbers(input_data[ind + 1])
+        for ast_ind in ast:
+            adj_numbers = []
+            for curr_num in num_curr_line:
+                if curr_num.end == ast_ind:  # left
+                    adj_numbers.append(curr_num)
+                if curr_num.start == ast_ind + 1:  # right
+                    adj_numbers.append(curr_num)
+            if ind > 0:
+                for prev_num in num_prev_line:
+                    if prev_num.end >= ast_ind and prev_num.start <= ast_ind + 1:
+                        adj_numbers.append(prev_num)
+            if ind < len(input_data) - 1:
+                for next_num in num_next_line:
+                    if next_num.end >= ast_ind and next_num.start <= ast_ind + 1:
+                        adj_numbers.append(next_num)
+            if len(adj_numbers) == 2:
+                gear_ratios.append(
+                    GearRatio(int(adj_numbers[0].group), int(adj_numbers[1].group), ind)
+                )
+    print(sum(gr.gear_ratio for gr in gear_ratios))
