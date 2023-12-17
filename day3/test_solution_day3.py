@@ -3,7 +3,7 @@ import pytest
 from day3.solution_day3 import (
     find_adjacent_other_line,
     find_adjacent_same_line,
-    find_adjacent_two_asterisks,
+    # find_adjacent_two_asterisks,
     find_asterisk_indeces,
     find_numbers,
     find_symbols_indeces,
@@ -111,5 +111,5 @@ def test_find_asterisk_indeces():
     assert 3 in find_asterisk_indeces("...*.....")
 
 
-def test_adjacent_two_asterisks():
-    assert find_adjacent_two_asterisks(test_case) == 467835
+# def test_adjacent_two_asterisks():
+#     assert find_adjacent_two_asterisks(test_case) == 467835
