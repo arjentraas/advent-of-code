@@ -66,16 +66,11 @@ for map_name, map_items in maps.items():
         items = map_item.split(" ")
         list_map_items.append(
             {
-                "start_source": int(items[1]),
-                "end_source": int(items[1]) + int(items[2]) - 1,
-                "start_dest": int(items[0]),
-                "end_dest": int(items[0]) + int(items[2]) - 1,
+                "start_src": int(items[1]),
+                "end_src": int(items[1]) + int(items[2]) - 1,
+                "start_dst": int(items[0]),
+                "end_dst": int(items[0]) + int(items[2]) - 1,
             }
-            #     int(items[1]),  # start_source,
-            #     int(items[1]) + int(items[2]) - 1,  # end_source
-            #     int(items[0]),  # start dest
-            #     int(items[0]) + int(items[2]) - 1,
-            # ]
         )
     maps[map_name] = list_map_items
 
@@ -88,6 +83,57 @@ def get_dst_val(src: int, maps: list):
     return dst
 
 
+def get_src_val(dst: int, maps: list):
+    src = dst
+    for m in maps:
+        if dst >= m["start_dst"] and dst <= m["end_dst"]:
+            src = m["start_src"] + dst - m["start_dst"]
+    return src
+
+
+def get_seed_for_location(location):
+    humidity = get_src_val(location, maps["humidity-to-location"])
+    temperature = get_src_val(humidity, maps["temperature-to-humidity"])
+    light = get_src_val(temperature, maps["light-to-temperature"])
+    water = get_src_val(light, maps["water-to-light"])
+    fertilizer = get_src_val(water, maps["fertilizer-to-water"])
+    soil = get_src_val(fertilizer, maps["soil-to-fertilizer"])
+    return get_src_val(soil, maps["seed-to-soil"])
+
+
+def seed_in_ranges(seed):
+    for seed_pair in seed_pairs:
+        if seed >= seed_pair[0] and seed <= seed_pair[0] + seed_pair[1]:
+            return True
+    return False
+
+
+min_location_in_map = sorted(
+    maps["humidity-to-location"], key=lambda x: x["start_dst"]
+)[0]["start_dst"]
+
+loc = 0
+while True:
+    seed = get_seed_for_location(loc)
+    if seed_in_ranges(seed):
+        lowest_location_in_batch = loc
+        break
+    loc += 10000
+print(lowest_location_in_batch)
+
+
+new_loc = loc - 10000
+while True:
+    seed = get_seed_for_location(new_loc)
+    if seed_in_ranges(seed):
+        lowest_location = new_loc
+        break
+    new_loc += 1
+
+print(lowest_location)
+
+
+# # Part 1
 # locations = []
 # for seed in tqdm(seeds):
 #     soil = get_dst_val(seed, maps["seed-to-soil"])
@@ -105,6 +151,7 @@ def get_dst_val(src: int, maps: list):
 # print(min(locations))
 
 
+# Part 2 - Brute force (not going to work)
 # locations = []
 # lowest_location = 9999999999999999999999
 # num_iters = 0
