@@ -1,6 +1,6 @@
 from tqdm import tqdm
 
-from helper import read_input
+from helper import read_input_lines
 
 
 class Race:
@@ -54,7 +54,7 @@ def main():
 
     # Part 2
     # race = parse_input_part2(read_input("day6/test_input_day6"))
-    race = parse_input_part2(read_input("day6/input_day6"))
+    race = parse_input_part2(read_input_lines("day6/input_day6"))
     race.possibilites_to_win()
     print(race.possibilites_to_win)
 

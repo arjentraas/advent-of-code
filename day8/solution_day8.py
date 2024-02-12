@@ -1,6 +1,6 @@
 from math import lcm
 
-from helper import read_input
+from helper import read_input_lines
 
 
 def parse_input(lines):
@@ -15,7 +15,7 @@ def parse_input(lines):
 
 
 def part1():
-    input = read_input("day8/input_day8.txt")
+    input = read_input_lines("day8/input_day8.txt")
     parsed = parse_input(input)
     steps = 0
     node = "AAA"
@@ -32,7 +32,7 @@ print(f"Part 1: {part1()}")
 
 
 def part2():
-    input = read_input("day8/input_day8.txt")
+    input = read_input_lines("day8/input_day8.txt")
     parsed = parse_input(input)
     nodes = [node for node in parsed["nodes"] if node.endswith("A")]
     step_list = []

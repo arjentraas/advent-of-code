@@ -1,6 +1,6 @@
 from collections import Counter, namedtuple
 
-from helper import read_input
+from helper import read_input_lines
 
 rank_dict = {
     "A": 13,
@@ -136,7 +136,7 @@ def calculate_total_winnigs(lst: list[Hand]):
 
 
 def main():
-    hand_bids = parse_input(read_input("day7/input_day7"))
+    hand_bids = parse_input(read_input_lines("day7/input_day7"))
     hands = [Hand(text=hand, bid=bid) for hand, bid in hand_bids.items()]
     ordered_hands = order_by_type(hands)
     d = split_hands_by_type(ordered_hands)

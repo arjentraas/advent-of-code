@@ -1,10 +1,10 @@
-from helper import read_input
+from helper import read_input_lines
 
 # from numpy import diff
 
 
 def part1():
-    inp = read_input("day9/input_day9.txt")
+    inp = read_input_lines("day9/input_day9.txt")
     predictions = []
     for line in inp:
         history = [int(p) for p in line.split(" ")]
@@ -30,7 +30,7 @@ def part1():
 
 
 def part2():
-    inp = read_input("day9/input_day9.txt")
+    inp = read_input_lines("day9/input_day9.txt")
     predictions = []
     for line in inp:
         history = [int(p) for p in line.split(" ")]
