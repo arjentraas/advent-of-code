@@ -36,9 +36,8 @@ def part_2():
     total_simularity = 0
     for left in left_nums:
         right_count = right_nums.get(left, 0)
-        simularity = left * right_count
-        total_simularity += simularity
-
+        similarity = left * right_count
+        total_simularity += similarity
     print(total_simularity)
 
 
