@@ -105,56 +105,6 @@ def remove_obstructions(grid: list[str]) -> list[str]:
     return grid
 
 
-def get_substrings(string: str) -> list[str]:
-    max_window = int(len(string) / 3)
-    min_window = 5
-    if max_window <= min_window:
-        return {}
-
-    substrings = set()
-    for window in range(min_window, max_window):
-        end_window_index = len(string)
-        start_window_index = len(string) - window
-        substrings.add(string[start_window_index:end_window_index])
-
-    return substrings
-
-
-def substring_in_order(substring: str, string: str) -> bool:
-    matches = list(re.finditer(substring, string))
-
-    for i in range(len(matches) - 2):
-        if matches[i].span()[1] == matches[i + 1].span()[0]:
-            continue
-        else:
-            return False
-    return True
-
-
-def in_loop(positions_visited: list[tuple[int, int]], min_occ=3) -> bool:
-    string = ""
-    for x, y in positions_visited:
-        string += str(x)
-        string += str(y)
-
-    occurrences = defaultdict(int)
-    # tally all occurrences of all substrings
-    for substring in get_substrings(string):
-        occurrences[substring] = string.count(substring)
-
-    if len(occurrences) == 0:
-        return False
-
-    for substring, count in occurrences.items():
-        if count < 3:  # substring (series of steps) should at least occur 3 times to to be able to be a loop
-            continue
-
-        if substring_in_order(substring, string):
-            return True
-
-    return False
-
-
 def print_grid(grid: list[str]):
     for line in grid:
         print(line)
@@ -169,41 +119,38 @@ def part_2():
     max_x = len(grid) - 1
     max_y = len(grid[0]) - 1
 
-    position = start_position
-    direction = start_direction
-
     loop_count = 0
 
     for y in range(max_y + 1):
         for x in range(max_x + 1):
             grid = parse_input()
-            positions_visited = []
-            loop_obstruction = False
-            position = start_position
-            direction = start_direction
+
+            if grid[x][y] == "#":
+                continue
 
             if (x, y) == start_position:
                 continue
 
+            loop_obstruction = False
+            position = start_position
+            direction = start_direction
+
             grid = place_obstruction(x, y, grid)
 
-            max_steps = 10000
-            steps = 0
+            # for each point, a set of directions that already is patrolled
+            visited: defaultdict[tuple[int, int], set[str]] = defaultdict(set)
+
             while True:
-                steps += 1
-
-                if steps == max_steps:
-                    print(f" ({x}, {y} - Too many steps")
-                    loop_obstruction = True
-                    break
-                positions_visited.append(position)
-
-                if in_loop(positions_visited) is True:
-                    loop_obstruction = True
-                    print(f" ({x}, {y} - in loop")
-                    break
+                # print_grid(grid)
+                visited[position].add(direction)
 
                 grid, direction, position = walk(grid, position, direction)
+
+                if direction in visited[position]:
+                    # its a loop
+                    loop_obstruction = True
+                    break
+
                 if position[1] == max_y or position[0] == max_x:
                     break
 
