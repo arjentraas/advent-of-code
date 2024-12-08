@@ -1,3 +1,5 @@
+import re
+from collections import defaultdict
 from time import sleep
 from typing import Literal
 
@@ -53,7 +55,7 @@ def walk(grid: list[str], current_position: tuple[int, int], direction: Directio
         direction = new_direction
         new_position = current_position
     else:
-        new_grid[current_y] = new_grid[current_y][:current_x] + "X" + new_grid[current_y][current_x + 1 :]
+        new_grid[current_y] = new_grid[current_y][:current_x] + "." + new_grid[current_y][current_x + 1 :]
         if direction in ["^", "v"]:
             new_grid[new_y] = new_grid[new_y][:new_x] + direction + new_grid[new_y][current_x + 1 :]
         elif direction == ">":
@@ -93,7 +95,7 @@ def part_1():
 
 
 def place_obstruction(x: int, y: int, grid: list[str]) -> list[str]:
-    grid[y][x] = "O"
+    grid[y] = grid[y][:x] + "O" + grid[y][x + 1 :]
     return grid
 
 
@@ -103,8 +105,60 @@ def remove_obstructions(grid: list[str]) -> list[str]:
     return grid
 
 
-def in_loop(positions_visited: list[tuple[int, int]]) -> bool:
-    pass
+def get_substrings(string: str) -> list[str]:
+    max_window = int(len(string) / 3)
+    min_window = 5
+    if max_window <= min_window:
+        return {}
+
+    substrings = set()
+    for window in range(min_window, max_window):
+        end_window_index = len(string)
+        start_window_index = len(string) - window
+        substrings.add(string[start_window_index:end_window_index])
+
+    return substrings
+
+
+def substring_in_order(substring: str, string: str) -> bool:
+    matches = list(re.finditer(substring, string))
+
+    for i in range(len(matches) - 2):
+        if matches[i].span()[1] == matches[i + 1].span()[0]:
+            continue
+        else:
+            return False
+    return True
+
+
+def in_loop(positions_visited: list[tuple[int, int]], min_occ=3) -> bool:
+    string = ""
+    for x, y in positions_visited:
+        string += str(x)
+        string += str(y)
+
+    occurrences = defaultdict(int)
+    # tally all occurrences of all substrings
+    for substring in get_substrings(string):
+        occurrences[substring] = string.count(substring)
+
+    if len(occurrences) == 0:
+        return False
+
+    for substring, count in occurrences.items():
+        if count < 3:  # substring (series of steps) should at least occur 3 times to to be able to be a loop
+            continue
+
+        if substring_in_order(substring, string):
+            return True
+
+    return False
+
+
+def print_grid(grid: list[str]):
+    for line in grid:
+        print(line)
+    print()
 
 
 def part_2():
@@ -118,19 +172,35 @@ def part_2():
     position = start_position
     direction = start_direction
 
-    loop_obstructions = 0
+    loop_count = 0
 
-    for y in grid:
-        for x in y:
-            grid = place_obstruction(x, y, grid)
-
+    for y in range(max_y + 1):
+        for x in range(max_x + 1):
+            grid = parse_input()
             positions_visited = []
             loop_obstruction = False
+            position = start_position
+            direction = start_direction
+
+            if (x, y) == start_position:
+                continue
+
+            grid = place_obstruction(x, y, grid)
+
+            max_steps = 10000
+            steps = 0
             while True:
+                steps += 1
+
+                if steps == max_steps:
+                    print(f" ({x}, {y} - Too many steps")
+                    loop_obstruction = True
+                    break
                 positions_visited.append(position)
 
-                if in_loop(positions_visited):
+                if in_loop(positions_visited) is True:
                     loop_obstruction = True
+                    print(f" ({x}, {y} - in loop")
                     break
 
                 grid, direction, position = walk(grid, position, direction)
@@ -141,4 +211,9 @@ def part_2():
                     break
 
             if loop_obstruction is True:
-                loop_obstructions += 1
+                loop_count += 1
+
+    print(loop_count)
+
+
+part_2()
