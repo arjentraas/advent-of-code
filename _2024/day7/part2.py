@@ -2,7 +2,7 @@ from itertools import product
 
 from _2024.day7.parse_input import parse
 
-OPERATORS = ["+", "*"]
+OPERATORS = ["+", "*", "||"]
 
 
 def calculate_equation(numbers: list[int], operators: list[list[str]]):
@@ -10,8 +10,10 @@ def calculate_equation(numbers: list[int], operators: list[list[str]]):
     for num, operator in zip(numbers[1:], operators):
         if operator == "+":
             result = result + num
-        else:
+        elif operator == "*":
             result = result * num
+        elif operator == "||":
+            result = int(str(result) + str(num))
     return result
 
 
