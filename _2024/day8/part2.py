@@ -42,25 +42,6 @@ def calculate_distance_factor(distance1: Distance, distance2: Distance):
         return x_factor
 
 
-def points_in_line(a: Point, b: Point, c: Point) -> bool:
-    """Check if three points are in line by checking the area of the ABC triangle is 0. Formula from Google :)"""
-    return a.x * (b.y - c.y) + b.x * (c.y - a.y) + c.x * (a.y - b.y) == 0
-
-
-def antennas_in_line(anti_nodes: set[Point], all_antennas: set[Point]) -> set[Point]:
-    """Check which combinations antennas are in line with two anti nodes."""
-    in_line = set()
-    for antenna1, antenna2 in combinations(all_antennas, r=2):
-        if antenna1 in in_line and antenna2 in in_line:
-            continue
-
-        for anti_node in anti_nodes:
-            if points_in_line(antenna1, antenna2, anti_node) is True:
-                in_line.update({antenna1, antenna2})
-                break
-    return in_line
-
-
 def main():
     grid = read_input_lines("_2024/day8/input.txt")
     max_x = len(grid[0]) - 1
@@ -85,11 +66,9 @@ def main():
                 resonant_factor += 1
                 anti_nodes = calculate_anti_nodes(antenna1, antenna2, resonant_factor)
 
-        antinode_locations.update(antennas_in_line(anti_nodes=antinode_locations, all_antennas=antennas))
+        antinode_locations.update(antennas)
 
     print(len(antinode_locations))
-    # for loc in antinode_locations:
-    #     print(loc)
 
 
 main()
