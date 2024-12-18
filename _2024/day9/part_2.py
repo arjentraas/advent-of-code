@@ -28,6 +28,7 @@ def main():
     for file_id in file_ids:
         digit_length = file_dict[file_id][1] - file_dict[file_id][0]
         try:
+            empty_spaces = defaultdict(list, dict(sorted(empty_spaces.items(), key=lambda item: item[1][0][0])))
             fitting_empty_length = next(length for length in empty_spaces.keys() if length >= digit_length)
         except StopIteration:
             continue
