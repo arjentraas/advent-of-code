@@ -20,14 +20,22 @@ def main():
         path = [coordinate]
         while path:
             x, y = path.pop(0)
-            left = grid[(x - 1, y)] if x > 1 else None
-            right = grid[(x + 1, y)] if x < max_x else None
-            up = grid[(x, y - 1)] if y > 1 else None
-            down = grid[(x, y + 1)] if y < max_y else None
-            neighbours = [left, right, up, down]
+            height = grid[(x, y)]
+            # Left
+            if x > 1 and grid[(x - 1, y)] == height + 1:
+                path.append((x - 1, y))
 
-            if not any(neighbour == height + 1 for neighbour in neighbours):
-                break
+            # Right
+            if x < max_x and grid[(x + 1, y)] == height + 1:
+                path.append((x + 1, y))
+
+            # Up
+            if y > 1 and grid[(x, y - 1)] == height + 1:
+                path.append((x, y - 1))
+
+            # Down
+            if y < max_y and grid[(x, y + 1)] == height + 1:
+                path.append((x, y + 1))
 
     pass
 
