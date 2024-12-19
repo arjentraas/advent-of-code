@@ -1,10 +1,8 @@
-from collections import deque
-
 from helper import read_input_lines
 
 
 def main():
-    input = read_input_lines("_2024/day10/example_input.txt")
+    input = read_input_lines("_2024/day10/input.txt")
     hiking_trails: dict[tuple, int] = {}
     grid: dict[tuple, int] = {}
     for y, line in enumerate(input, 1):
@@ -16,28 +14,35 @@ def main():
     max_x = len(input[0])
     max_y = len(input)
 
+    sum_hike_trail = 0
     for coordinate, height in hiking_trails.items():
+        hike_score = 0
         path = [coordinate]
-        while path:
+        while path and height < 10:
             x, y = path.pop(0)
             height = grid[(x, y)]
+            if height == 9:
+                hike_score += 1
+
             # Left
-            if x > 1 and grid[(x - 1, y)] == height + 1:
+            if x > 1 and grid[(x - 1, y)] == height + 1 and (x - 1, y) and (x - 1, y) not in path:
                 path.append((x - 1, y))
 
             # Right
-            if x < max_x and grid[(x + 1, y)] == height + 1:
+            if x < max_x and grid[(x + 1, y)] == height + 1 and (x + 1, y) and (x + 1, y) not in path:
                 path.append((x + 1, y))
 
             # Up
-            if y > 1 and grid[(x, y - 1)] == height + 1:
+            if y > 1 and grid[(x, y - 1)] == height + 1 and (x, y - 1) and (x, y - 1) not in path:
                 path.append((x, y - 1))
 
             # Down
-            if y < max_y and grid[(x, y + 1)] == height + 1:
+            if y < max_y and grid[(x, y + 1)] == height + 1 and (x, y + 1) and (x, y + 1) not in path:
                 path.append((x, y + 1))
 
-    pass
+        sum_hike_trail += hike_score
+
+    print(sum_hike_trail)
 
 
 main()
