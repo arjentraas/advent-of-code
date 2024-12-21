@@ -1,51 +1,50 @@
-from collections import defaultdict
+import networkx as nx
 
 from helper import read_input_lines
 
 
-def get_garden_plots():
-    input = read_input_lines("_2024/day12/example_input.txt")
-    garden_plots = defaultdict(list)
+def main():
+    input = read_input_lines("_2024/day12/input.txt")
+    g = nx.Graph()
+    plant_types = set()
+
     for y, line in enumerate(input):
         for x, char in enumerate(line):
-            garden_plots[char].append((x, y))
+            plant_types.add(char)
+            node_name = f"{x},{y}"
+            g.add_node(node_name, type=char)
+            if f"{x + 1},{y}" in g.nodes:
+                g.add_edge(node_name, f"{x + 1},{y}")
+            if f"{x - 1},{y}" in g.nodes:
+                g.add_edge(node_name, f"{x - 1},{y}")
+            if f"{x},{y+1}" in g.nodes:
+                g.add_edge(node_name, f"{x},{y+1}")
+            if f"{x},{y-1}" in g.nodes:
+                g.add_edge(node_name, f"{x},{y-1}")
 
-    return garden_plots
+    total_price = 0
+    for plant_type in plant_types:
+        subgraph = g.copy()
+        subgraph.remove_nodes_from([n for n, n_data in subgraph.nodes(data=True) if n_data.get("type") != plant_type])
+        for island in nx.connected_components(subgraph):
+            area = len(island)
+            perimeter = 0
+            if area == 1:
+                perimeter = 4
+            else:
+                for node in island:
+                    n_neighbours = len(subgraph.edges(node))
+                    match n_neighbours:
+                        case 1:
+                            perimeter += 3
+                        case 2:
+                            perimeter += 2
+                        case 3:
+                            perimeter += 1
+            total_price += area * perimeter
+            pass
 
-
-def are_adjacent(location1: tuple[int, int], location2: tuple[int, int]) -> bool:
-    return (abs(location1[0] - location2[0]) == 1 and location1[1] == location2[1]) or (
-        abs(location1[1] - location2[1]) == 1 and location1[0] == location2[0]
-    )
-
-
-def calc_perimeter(region: list[tuple[int, int]]):
-    if len(region) == 1:
-        return 4
-
-    p = 0
-    for loc in region:
-        neighbours = {l for l in region if l != loc and are_adjacent(loc, l)}
-        neighbour_count = len(neighbours)
-        if neighbour_count == 1:
-            p += 3
-        elif neighbour_count == 2:
-            p += 2
-        elif neighbour_count == 3:
-            p += 1
-    return p
-
-
-def main():
-    garden_plots = get_garden_plots()
-    sum = 0
-    for plant_type, regions in garden_plots.items():
-        for region in regions:
-            area = len(region)
-            perimeter = calc_perimeter(region)
-            sum += area * perimeter
-    print(sum)
+    print(total_price)
 
 
 main()
-# 779940 - too low
