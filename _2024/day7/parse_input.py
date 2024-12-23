@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from helper import read_input_lines
+from utils import read_input_lines
 
 
 @dataclass

@@ -1,7 +1,7 @@
 from itertools import combinations
 from typing import NamedTuple
 
-from helper import read_input_lines
+from utils import read_input_lines
 
 
 class Point(NamedTuple):

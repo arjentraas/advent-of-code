@@ -2,7 +2,7 @@ from itertools import pairwise
 
 import networkx as nx
 
-from helper import read_input_lines
+from utils import read_input_lines
 
 
 def expand_space(lines: list):

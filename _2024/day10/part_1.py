@@ -1,4 +1,4 @@
-from helper import read_input_lines
+from utils import read_input_lines
 
 
 def main():

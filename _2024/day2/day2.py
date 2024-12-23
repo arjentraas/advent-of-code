@@ -1,6 +1,6 @@
 from itertools import pairwise
 
-from helper import read_input_lines
+from utils import read_input_lines
 
 
 def _is_safe(nums: list[int]) -> bool:

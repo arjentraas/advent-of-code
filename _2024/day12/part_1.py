@@ -1,6 +1,6 @@
 import networkx as nx
 
-from helper import read_input_lines
+from utils import read_input_lines
 
 
 def main():
@@ -42,7 +42,6 @@ def main():
                         case 3:
                             perimeter += 1
             total_price += area * perimeter
-            pass
 
     print(total_price)
 

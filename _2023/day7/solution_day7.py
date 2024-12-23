@@ -1,6 +1,6 @@
 from collections import Counter, namedtuple
 
-from helper import read_input_lines
+from utils import read_input_lines
 
 rank_dict = {
     "A": 13,
@@ -58,9 +58,7 @@ class Hand:
         if jokers:
             without_jokers = self.text.replace("J", "")
             counter = Counter(without_jokers)
-            counter = dict(
-                sorted(counter.items(), key=lambda item: item[1], reverse=True)
-            )
+            counter = dict(sorted(counter.items(), key=lambda item: item[1], reverse=True))
             if jokers == 5:
                 return ("a", "5-of-a-kind")
             most_card = list(counter.keys())[0]

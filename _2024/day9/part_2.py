@@ -1,6 +1,6 @@
 from collections import defaultdict
 
-from helper import read_input
+from utils import read_input
 
 
 def main():

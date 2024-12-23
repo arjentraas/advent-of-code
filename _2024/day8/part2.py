@@ -1,7 +1,7 @@
 from itertools import combinations
 
 from _2024.day8.part1 import Distance, Point, calculate_distance, get_antennas, get_frequencies
-from helper import read_input_lines
+from utils import read_input_lines
 
 
 def within_bounds(point: Point, max_x: int, max_y: int) -> bool:

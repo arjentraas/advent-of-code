@@ -1,7 +1,7 @@
 from collections import defaultdict
 from typing import Literal
 
-from helper import read_input_lines
+from utils import read_input_lines
 
 type Direction = Literal["^", "v", ">", "<"]
 
