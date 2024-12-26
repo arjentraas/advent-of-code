@@ -49,3 +49,6 @@ dist/**
 package.nls.*.json
 l10n/
 .vscode
+
+# no actual inputs allowed
+input.txt
