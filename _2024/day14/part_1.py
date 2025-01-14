@@ -57,7 +57,4 @@ def main():
     print(prod(q.values()))
 
 
-# 227931648 - too low
-# 224250000
-# 221369760
 main()
