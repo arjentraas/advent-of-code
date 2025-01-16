@@ -1,10 +1,19 @@
+from collections import defaultdict
 from dataclasses import dataclass
+from math import ceil, prod
 from typing import Generator
+
+import matplotlib.pyplot as plt
 
 from utils import read_input_lines
 
-max_x = 11
-max_y = 7
+max_x = 101
+max_y = 103
+
+x_boundary = ceil(max_x / 2) - 1
+y_boundary = ceil(max_y / 2) - 1
+
+plt.gca().invert_yaxis()
 
 
 @dataclass
@@ -14,7 +23,7 @@ class Robot:
     delta_x: int
     delta_y: int
 
-    def move(self, n: int = 0):
+    def move(self, n: int = 1):
         for _ in range(n):
             new_x = self.x + self.delta_x
             new_y = self.y + self.delta_y
@@ -34,9 +43,22 @@ class Robot:
             self.x = new_x
             self.y = new_y
 
+    @property
+    def quadrant(self) -> str | None:
+        if self.x < x_boundary:
+            if self.y < y_boundary:
+                return "leftup"
+            elif self.y > y_boundary:
+                return "left-down"
+        elif self.x > x_boundary:
+            if self.y < y_boundary:
+                return "right-up"
+            elif self.y > y_boundary:
+                return "right-down"
+
 
 def get_robots() -> Generator[Robot, None, None]:
-    robots = read_input_lines("_2024/day14/example_input.txt")
+    robots = read_input_lines("_2024/day14/input.txt")
     for robot in robots:
         robot_split = robot.split(" ")
         start_position = robot_split[0].split("=")[1].split(",")
@@ -50,26 +72,52 @@ def get_robots() -> Generator[Robot, None, None]:
         yield Robot(start_x, start_y, delta_x, delta_y)
 
 
-most_robots_count = 251
+def plot_robots(robots: list[Robot], n: int):
+    plt.scatter(x=[robot.x for robot in robots], y=[robot.y for robot in robots], s=[0.2 for _ in robots])
+    plt.savefig(f"_2024/day14/figs/{n}.png")
+    plt.close()
 
 
-def robots_forming_tree(robots: list[Robot]) -> bool:
-    return False
-
-
-def main():
+def part_1():
     robots = list(get_robots())
-    n_seconds = 1
-    while True:
+
+    for robot in robots:
+        robot.move(n=100)
+
+    quadrants = defaultdict(int)
+
+    for robot in robots:
+        if robot.quadrant:
+            quadrants[robot.quadrant] += 1
+
+    print(prod(quadrants.values()))
+
+
+def part_2():
+    start_1 = 22
+    start_2 = 79
+
+    for _ in range(100):
+        robots = list(get_robots())
+
         for robot in robots:
-            robot.move()
+            robot.move(start_1)
 
-        if robots_forming_tree(robots):
-            break
+        plot_robots(robots, start_1)
+        start_1 += 103
 
-        n_seconds += 1
+    for _ in range(100):
+        robots = list(get_robots())
 
-    print(n_seconds)
+        for robot in robots:
+            robot.move(start_2)
+
+        plot_robots(robots, start_2)
+
+        start_2 += 101
+
+    # 22, 79, 125, 180, 228, 281, the patterns occur
+    # print only these robot formations, look manually.
 
 
-main()
+part_2()
