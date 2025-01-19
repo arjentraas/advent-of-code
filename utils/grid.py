@@ -20,6 +20,12 @@ class Grid(UserDict[Position, str]):
     def __init__(self):
         super().__init__()
 
+    def __setitem__(self, key: Position, item: str) -> None:
+        super().__setitem__(key, item)
+        self.max_x = max(pos.x for pos in self)
+        self.max_y = max(pos.y for pos in self)
+        return
+
     def __hash__(self):
         return hash((self.max_y, self.max_x, frozenset(self.items())))
 
@@ -101,20 +107,24 @@ class Grid(UserDict[Position, str]):
         teleport: bool = False,
         replace: bool = True,
         replace_val: str = ".",
+        step_count_factor: int = 1,
     ) -> Position:
         """Move a item in a start position given"""
         v = self[start_position]
 
         if teleport is False:
-            new_position = Position(start_position.x + direction.delta_x, start_position.y + direction.delta_y)
+            new_position = Position(
+                start_position.x + direction.delta_x * step_count_factor,
+                start_position.y + direction.delta_y * step_count_factor,
+            )
         else:
-            new_x = start_position.x + direction.delta_x
+            new_x = start_position.x + direction.delta_x * step_count_factor
             if new_x > self.max_x:
                 new_x = new_x - self.max_x - 1
             elif new_x < 0:
                 new_x = self.max_x + new_x + 1  # plus because it's negative
 
-            new_y = start_position.y + direction.delta_y
+            new_y = start_position.y + direction.delta_y * step_count_factor
             if new_y > self.max_y:
                 new_y = new_y - self.max_y - 1
             elif new_y < 0:
