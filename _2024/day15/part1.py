@@ -1,4 +1,4 @@
-from utils.directions import RIGHT, STRAIGHT_DIRECTIONS, Direction
+from utils.directions import STRAIGHT_DIRECTIONS, Direction
 from utils.grid import Grid, Position
 from utils.read import read_input_lines
 
